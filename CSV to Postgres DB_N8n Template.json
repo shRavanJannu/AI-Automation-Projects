@@ -1,0 +1,216 @@
+{
+  "name": "3_CSV to Postgres DB",
+  "nodes": [
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Sales",
+          "mode": "list",
+          "cachedResultName": "Sales"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "OrderID": "={{ $json.OrderID }}",
+            "OrdersDate": "={{ $json.OrderDate }}",
+            "CustomerName": "={{ $json.CustomerName }}",
+            "CustomerEmail": "=",
+            "Amount": "={{ $json.Amount }}",
+            "Region": "={{ $json.Region }}",
+            "Status": "={{ $json.Status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "OrderID",
+              "displayName": "OrderID",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "OrdersDate",
+              "displayName": "OrdersDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CustomerName",
+              "displayName": "CustomerName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CustomerEmail",
+              "displayName": "CustomerEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Amount",
+              "displayName": "Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Region",
+              "displayName": "Region",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -176,
+        208
+      ],
+      "id": "10f18732-5ff4-4b56-8867-0d7e767447ff",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "W6qz5lNAzAbzBOxj",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        208
+      ],
+      "id": "1b090fb2-e0b4-4fd5-8726-da8d3482f4b6",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ],
+          "q": "subject: sales"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -624,
+        208
+      ],
+      "id": "b689220d-1177-47c5-8ae6-6e72dbc10c3f",
+      "name": "When a new mail received",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fH6MNEHIBEJOEtsz",
+          "name": "Codebasicst Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "[![Codebasics Logo](https://files.codebasics.io/v3/images/sticky-logo.svg)](https://codebasics.io/) \n### AI Automation for Data Professionals Course \n",
+        "height": 176,
+        "width": 208,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -912,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "885c69a5-6d51-411a-850c-76af52c62e52",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When a new mail received": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "34cffc70-20fa-420c-8bf5-c4310902fc50",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d1d833666fe269ef7aed66a02c83537ae536c231b1e33873d69bca85017b98d8"
+  },
+  "id": "B6DtLnPHuP2EcDqc",
+  "tags": []
+}
