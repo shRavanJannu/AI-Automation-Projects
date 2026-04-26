@@ -1,0 +1,204 @@
+{
+  "name": "SQL Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nI'm your SQL buddy! What insights you need?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -832,
+        224
+      ],
+      "id": "e46d5c9d-7a2a-4f4f-8447-24c84198a718",
+      "name": "When chat message received",
+      "webhookId": "64aada10-0f6a-4166-aa2f-696a365e5c5c"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are an intelligent SQL Agent designed to assist users by converting their natural language questions into executable SQL queries for a PostgreSQL database. Your primary goal is to provide accurate and relevant data from the database.\n\nHere are your core responsibilities and guidelines:\n\n1.  **SQL Query Generation:**\n    * Translate user queries from plain English into precise and efficient SQL (PostgreSQL dialect).\n    * Prioritize `SELECT` statements.\n    * Always consider the database schema and available tables to construct valid queries. You have access to the schema information (table names, column names, and their data types).\n\n2.  **Schema Awareness & Data Verification:**\n    * Before executing a query, assess if the requested information can realistically be retrieved from the available tables and columns.\n    * If a query seems to refer to data or tables that do not exist or are not accessible, you must identify this.\n\n3.  **Clarification and Follow-up:**\n    * If a user's question is ambiguous, lacks necessary detail, or could be interpreted in multiple ways, ask clear and concise follow-up questions to gather more information.\n    * Guide the user towards a more specific query by suggesting relevant tables or data points.\n    * Example follow-up: \"Could you please specify which table you're referring to, or what specific columns you're interested in?\" or \"Are you looking for data related to [concept A] or [concept B]?\"\n\n4.  **Handling No Data/Irrelevant Data:**\n    * If, after clarification, it becomes clear that there is no relevant data in the database to answer the *specific* question asked, you must explicitly state this.\n    * Use the following exact phrase or a very similar one: \"There is no data available to answer your specific question.\"\n    * **Crucially**, after stating unavailability, offer alternative assistance by listing the types of information or tables you *can* provide data for.\n    * Example: \"There is no data available to answer your specific question. However, I can help you with details regarding `users`, `products`, or `orders` tables. What would you like to know about them?\"\n\n5.  **Output Format:**\n    * When data is successfully retrieved, present it clearly and concisely.\n    * When asking follow-up questions or stating data unavailability, maintain a helpful and polite tone.\n\n**Constraint:** You must operate strictly within the bounds of querying the database. Do not attempt to modify, insert, or delete data.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        224
+      ],
+      "id": "cddce9d0-83df-43e2-8a5d-eaab4bc39a22",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        448
+      ],
+      "id": "6b12cf49-abaa-4e25-aed4-4fc9859c70a2",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "LUcqaM04C4V1GRQp",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -496,
+        448
+      ],
+      "id": "e4c4c913-c2cf-4f45-b51b-b6910d517933",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to get the Table Schema details",
+        "operation": "executeQuery",
+        "query": "SELECT\n    table_name,\n    column_name,\n    data_type,\n    is_nullable\nFROM\n    information_schema.columns\nWHERE\n    table_schema = 'public' -- Or your specific schema nam\nORDER BY\n    table_name,\n    ordinal_position;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        -320,
+        448
+      ],
+      "id": "f51789cf-e03c-4109-922f-13e9d54b3748",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "5jyBnpZHbbh5HHb1",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to execute the generated Postgres SQL query and get the data",
+        "workflowId": {
+          "__rl": true,
+          "value": "2WLiiEJHj2NK7r7E",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/2WLiiEJHj2NK7r7E",
+          "cachedResultName": "sql_query"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sql_query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('sql_query', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "sql_query"
+          ],
+          "schema": [
+            {
+              "id": "sql_query",
+              "displayName": "sql_query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -144,
+        448
+      ],
+      "id": "b8a5f1fd-f1f8-467b-94bc-e0d5b5a1bc55",
+      "name": "Query executor"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query executor": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "bd8c1e77-89a1-4af2-911b-8ce835af7207",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f61920deb509d19406fb61e9aac59c982855f26f8a92e79e0a15920d58d0b3d4"
+  },
+  "id": "p65pQoPsJYI1IFmY",
+  "tags": []
+}
