@@ -9,9 +9,8 @@ This automation workflow accepts a natural language chat message, interprets it 
 
 ---
 
-## 🏗️ Architecture
-
-```
+## 🏗️ WorkFLow
+![Workflow](https://github.com/shRavanJannu/AI-Automation-Projects/blob/87414b5c485a11dcdc80ed47e30d866ace51e390/Natural%20Language%20to%20SQL%20Query%20Agent/workflow.png)
 
 ---
 
