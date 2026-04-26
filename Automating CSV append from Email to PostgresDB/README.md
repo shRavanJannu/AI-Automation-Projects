@@ -16,7 +16,7 @@ Gmail Trigger  →  Extract from CSV  →  Insert Rows in PostgreSQL
 | 2 | **Extract from File** | Parses the CSV attachment into structured rows |
 | 3 | **Insert rows in a table** | Inserts each row into a Supabase PostgreSQL table |
 
-![Workflow Screenshot](Automating CSV append from Email to PostgresDB/workflow.png)
+![Workflow Screenshot](https://github.com/shRavanJannu/AI-Automation-Projects/blob/8963fac6e3bd1fd219b08cd853d349c874dd2f3f/Automating%20CSV%20append%20from%20Email%20to%20PostgresDB/workflow.png)
 
 ---
 
