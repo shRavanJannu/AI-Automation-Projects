@@ -44,10 +44,7 @@ Gmail Trigger  →  Extract from CSV  →  Insert Rows in PostgreSQL
 
 ### 1. Clone this repository
 
-```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
-```
+
 
 ### 2. Import the workflow into n8n
 
@@ -89,17 +86,6 @@ cd YOUR_REPO_NAME
 ### 5. Activate the Workflow
 
 Toggle the workflow to **Active** in n8n. It will now listen for new Gmail messages.
-
----
-
-## 📁 Repository Structure
-
-```
-.
-├── README.md               # This file
-├── workflow.json           # n8n workflow export
-└── workflow-screenshot.png # Screenshot of the n8n workflow
-```
 
 ---
 
